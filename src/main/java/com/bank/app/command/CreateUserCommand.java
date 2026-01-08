@@ -19,6 +19,7 @@ public class CreateUserCommand implements OperationCommand{
     @Override
     public void execute() {
         System.out.println("Enter login for new user:");
+        System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
         String login = scanner.nextLine().trim();
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -29,5 +30,29 @@ public class UserRepository {
         userList.add(user);
 
         return user;
+    }
+
+    public User findUserById(int id) {
+        return userList.stream()
+                .filter(user -> user.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<User> findAll() {
+        return userList;
+    }
+
+    public void closeAccountBytId(int accountId, int userId) {
+        Optional<User> user = userList.stream()
+                .filter(usr -> usr.getId() == userId)
+                .findFirst();
+
+
+        user.ifPresent(
+                usr -> {
+                    usr.getAccountList().removeIf(acc -> acc.getId() == accountId);
+                }
+        );
     }
 }

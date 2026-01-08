@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class AccountRepository {
@@ -24,6 +25,15 @@ public class AccountRepository {
         accountList.add(account);
 
         return account;
+    }
+
+    public Optional<Account> closeAccountById(int accountId) {
+        Optional<Account> accountToClose = accountList.stream()
+                .filter(acc -> acc.getId() == accountId)
+                .findFirst();
+
+        accountToClose.ifPresent(accountList::remove);
+        return accountToClose;
     }
 
 }
