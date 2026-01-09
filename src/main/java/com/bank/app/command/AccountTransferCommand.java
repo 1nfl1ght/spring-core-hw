@@ -20,15 +20,46 @@ public class AccountTransferCommand implements OperationCommand{
         System.out.println("Enter source account ID:");
         System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
-        int fromId = Integer.parseInt(scanner.nextLine());
+
+        int fromId;
+        try {
+            fromId = Integer.parseInt(scanner.nextLine());
+            if (fromId <= 0) {
+                throw new IllegalArgumentException("Account ID must be greater than 0");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid account ID format");
+        }
 
         System.out.println("Enter target account ID:");
         System.out.print("> ");
-        int toId = Integer.parseInt(scanner.nextLine());
+        int toId;
+        try {
+            toId = Integer.parseInt(scanner.nextLine());
+            if (toId <= 0) {
+                throw new IllegalArgumentException("Account ID must be greater than 0");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid account ID format");
+        }
+
+        if (fromId == toId) {
+            throw new IllegalArgumentException("Enter different account ids");
+        }
 
         System.out.println("Enter amount to transfer:");
         System.out.print("> ");
-        int amount = Integer.parseInt(scanner.nextLine());
+
+        int amount;
+        try {
+            amount = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid amount format");
+        }
+
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount can not be less than 0");
+        }
 
         accountService.transfer(fromId, toId, amount);
 

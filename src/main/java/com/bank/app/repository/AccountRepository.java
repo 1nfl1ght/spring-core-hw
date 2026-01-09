@@ -48,28 +48,41 @@ public class AccountRepository {
     }
 
     public void accountWithdraw(int accId, int amount) {
-        Optional<Account> account = accountList.stream()
+        Account account = accountList.stream()
                 .filter(acc -> acc.getId() == accId)
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Account with ID " + accId + " not found"
+                ));
 
-        account.ifPresent(acc -> acc.setMoneyAmount(acc.getMoneyAmount() - amount));
+        if (account.getMoneyAmount() - amount < 0) {
+            throw new IllegalArgumentException("Not enough money on the account with ID: " + account.getId());
+        } else {
+            account.setMoneyAmount(account.getMoneyAmount() - amount);
+        }
     }
 
     public void transfer(int fromId, int toId, int amount) {
-        Optional<Account> accFrom = accountList.stream()
+        Account accFrom = accountList.stream()
                 .filter(acc -> acc.getId() == fromId)
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Account with ID " + fromId + " not found"
+                ));;
 
-        Optional<Account> accTo = accountList.stream()
+        Account accTo = accountList.stream()
                 .filter(acc -> acc.getId() == toId)
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Account with ID " + toId + " not found"
+                ));
 
-        accFrom.ifPresent(
-                acc -> acc.setMoneyAmount(acc.getMoneyAmount() - amount)
-        );
-        accTo.ifPresent(
-                acc -> acc.setMoneyAmount(acc.getMoneyAmount() + amount)
-        );
+        if (accFrom.getMoneyAmount() - amount < 0) {
+            throw new IllegalArgumentException("Not enough money in the account with id: " + accFrom.getId());
+        } else {
+            accFrom.setMoneyAmount(accFrom.getMoneyAmount() - amount);
+        }
+        accTo.setMoneyAmount(accTo.getMoneyAmount() + amount);
     }
 
 }

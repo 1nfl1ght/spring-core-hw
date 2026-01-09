@@ -21,10 +21,27 @@ public class AccountWithdrawCommand implements OperationCommand{
         System.out.println("Enter account id:");
         System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
-        int accId = Integer.parseInt(scanner.nextLine());
+
+        int accId;
+        try {
+            accId = Integer.parseInt(scanner.nextLine());
+            if (accId <= 0) {
+                throw new IllegalArgumentException("Account ID must be greater than 0");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid account ID format");
+        }
+
         System.out.println("Enter amount to withdraw:");
         System.out.print("> ");
-        int amount = Integer.parseInt(scanner.nextLine());
+
+        int amount;
+        try {
+            amount = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid amount format");
+        }
+
         accountService.accountWithdraw(accId, amount);
         System.out.println("Amount " + amount + " withdrawn to account ID: " + accId);
     }
