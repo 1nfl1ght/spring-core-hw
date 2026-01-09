@@ -26,10 +26,16 @@ public class AccountCreateCommand implements OperationCommand{
         System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
         String id = scanner.nextLine().trim();
-        User user = userService.findUserById(Integer.parseInt(id));
-        Account account = accountService.createAccount(Integer.parseInt(id));
-        user.getAccountList().add(account);
-        System.out.println("New account created with ID: " + account.getId() + " for user: " + user.getLogin());
+
+        if (!id.isBlank()) {
+            User user = userService.findUserById(Integer.parseInt(id));
+            Account account = accountService.createAccount(Integer.parseInt(id));
+            user.getAccountList().add(account);
+            System.out.println("New account created with ID: " + account.getId() + " for user: " + user.getLogin());
+        } else {
+            throw new IllegalArgumentException("User id can not be empty");
+        }
+
     }
 
     @Override

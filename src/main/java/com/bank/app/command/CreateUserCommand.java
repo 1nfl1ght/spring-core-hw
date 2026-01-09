@@ -23,8 +23,13 @@ public class CreateUserCommand implements OperationCommand{
         Scanner scanner = new Scanner(System.in);
         String login = scanner.nextLine().trim();
 
-        User user = userService.createUser(login);
-        System.out.println("User created: " + user);
+        if (!login.isBlank()) {
+            User user = userService.createUser(login);
+            System.out.println("User created: " + user);
+        } else {
+            throw new IllegalArgumentException("Login can not be empty");
+        }
+
     }
 
     @Override

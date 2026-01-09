@@ -36,16 +36,18 @@ public class OperationsConsoleListener {
             String input = scanner.nextLine().trim().toUpperCase();
 
             try {
-                OperationType operationType = OperationType.valueOf(input);
+                OperationType operationType;
+                if (isValidCommand(input)) {
+                    operationType = OperationType.valueOf(input);
+                } else {
+                    throw new IllegalArgumentException("Command not found");
+                }
                 OperationCommand command = commandMap.get(operationType);
 
-                if (command != null) {
-                    command.execute();
-                } else {
-                    System.out.println("Command not found");
-                }
+                command.execute();
+
             } catch (IllegalArgumentException e) {
-                System.out.println("Command not found");
+                System.out.println(e.getMessage());
             }
 
             System.out.println("Please enter one operation type:");
@@ -61,5 +63,14 @@ public class OperationsConsoleListener {
         }
 
 
+    }
+
+    public boolean isValidCommand(String command) {
+        try {
+            OperationType.valueOf(command);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

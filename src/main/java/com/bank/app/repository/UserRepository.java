@@ -36,7 +36,7 @@ public class UserRepository {
         return userList.stream()
                 .filter(user -> user.getId() == id)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
     }
 
     public List<User> findAll() {

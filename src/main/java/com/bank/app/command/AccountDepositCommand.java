@@ -20,10 +20,31 @@ public class AccountDepositCommand implements OperationCommand{
         System.out.println("Enter account id:");
         System.out.print("> ");
         Scanner scanner = new Scanner(System.in);
-        int accId = Integer.parseInt(scanner.nextLine());
+
+        int accId;
+        try {
+            accId = Integer.parseInt(scanner.nextLine());
+            if (accId <= 0) {
+                throw new IllegalArgumentException("Account ID must be greater than 0");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid account ID format");
+        }
+
         System.out.println("Enter amount to deposit:");
         System.out.print("> ");
-        int amount = Integer.parseInt(scanner.nextLine());
+
+        int amount;
+        try {
+            amount = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid amount format");
+        }
+
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount can not be less than 0");
+        }
+
         accountService.accountDeposit(accId, amount);
         System.out.println("Amount " + amount + " deposited to account ID: " + accId);
     }

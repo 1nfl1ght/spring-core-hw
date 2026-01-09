@@ -13,13 +13,9 @@ import java.util.Scanner;
 @Component
 public class AccountCloseCommand implements OperationCommand{
 
-    private final UserService userService;
-    private final AccountService accountService;
     private final UserAccountService userAccountService;
 
-    public AccountCloseCommand(UserService userService, AccountService accountService, UserAccountService userAccountService) {
-        this.userService = userService;
-        this.accountService = accountService;
+    public AccountCloseCommand(UserAccountService userAccountService) {
         this.userAccountService = userAccountService;
     }
 
@@ -29,10 +25,19 @@ public class AccountCloseCommand implements OperationCommand{
         System.out.print("> ");
 
         Scanner scanner = new Scanner(System.in);
-        String id = scanner.nextLine().trim();
+        int accId;
+        try {
+            accId = Integer.parseInt(scanner.nextLine());
+            if (accId <= 0) {
+                throw new IllegalArgumentException("Account ID must be greater than 0");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid account ID format");
+        }
 
-        userAccountService.closeAccountById(Integer.parseInt(id));
-        System.out.println("Account with ID: " + id + " has been closed");
+
+        userAccountService.closeAccountById(accId);
+        System.out.println("Account with ID: " + accId + " has been closed");
     }
 
     @Override

@@ -18,7 +18,7 @@ public class UserAccountService {
 
     public void closeAccountById(int accountId) {
         Account account = accountRepository.closeAccountById(accountId)
-                .orElseThrow(() -> new IllegalArgumentException("No such account: id=%s".formatted(accountId)));
+                .orElseThrow(() -> new IllegalArgumentException("Account with ID " + accountId + " not found"));
         int userId = account.getUserId();
         userRepository.closeAccountBytId(accountId, userId);
     }

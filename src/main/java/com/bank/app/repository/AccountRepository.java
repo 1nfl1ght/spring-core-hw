@@ -37,11 +37,14 @@ public class AccountRepository {
     }
 
     public void accountDeposit(int accId, int amount) {
-        Optional<Account> account = accountList.stream()
+        Account account = accountList.stream()
                 .filter(acc -> acc.getId() == accId)
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Account with ID " + accId + " not found"
+                ));;
 
-        account.ifPresent(acc -> acc.setMoneyAmount(acc.getMoneyAmount() + amount));
+        account.setMoneyAmount(account.getMoneyAmount() + amount);
     }
 
     public void accountWithdraw(int accId, int amount) {
