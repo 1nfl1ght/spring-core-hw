@@ -21,4 +21,16 @@ public class AccountService {
 
         return account;
     }
+
+    public void accountDeposit(int accId, int amount) {
+        accountRepository.accountDeposit(accId, amount);
+    }
+
+    public void accountWithdraw(int accId, int amount) {
+        accountRepository.accountWithdraw(accId, amount);
+    }
+
+    public void transfer(int fromId, int toId, int amount) {
+        accountRepository.transfer(fromId, toId, amount);
+    }
 }

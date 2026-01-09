@@ -36,4 +36,37 @@ public class AccountRepository {
         return accountToClose;
     }
 
+    public void accountDeposit(int accId, int amount) {
+        Optional<Account> account = accountList.stream()
+                .filter(acc -> acc.getId() == accId)
+                .findFirst();
+
+        account.ifPresent(acc -> acc.setMoneyAmount(acc.getMoneyAmount() + amount));
+    }
+
+    public void accountWithdraw(int accId, int amount) {
+        Optional<Account> account = accountList.stream()
+                .filter(acc -> acc.getId() == accId)
+                .findFirst();
+
+        account.ifPresent(acc -> acc.setMoneyAmount(acc.getMoneyAmount() - amount));
+    }
+
+    public void transfer(int fromId, int toId, int amount) {
+        Optional<Account> accFrom = accountList.stream()
+                .filter(acc -> acc.getId() == fromId)
+                .findFirst();
+
+        Optional<Account> accTo = accountList.stream()
+                .filter(acc -> acc.getId() == toId)
+                .findFirst();
+
+        accFrom.ifPresent(
+                acc -> acc.setMoneyAmount(acc.getMoneyAmount() - amount)
+        );
+        accTo.ifPresent(
+                acc -> acc.setMoneyAmount(acc.getMoneyAmount() + amount)
+        );
+    }
+
 }
