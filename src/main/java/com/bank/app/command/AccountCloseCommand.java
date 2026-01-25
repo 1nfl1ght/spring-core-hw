@@ -1,11 +1,7 @@
 package com.bank.app.command;
 
 import com.bank.app.console.OperationType;
-import com.bank.app.model.Account;
-import com.bank.app.model.User;
 import com.bank.app.service.AccountService;
-import com.bank.app.service.UserAccountService;
-import com.bank.app.service.UserService;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
@@ -13,10 +9,10 @@ import java.util.Scanner;
 @Component
 public class AccountCloseCommand implements OperationCommand{
 
-    private final UserAccountService userAccountService;
+    private final AccountService accountService;
 
-    public AccountCloseCommand(UserAccountService userAccountService) {
-        this.userAccountService = userAccountService;
+    public AccountCloseCommand(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @Override
@@ -36,7 +32,7 @@ public class AccountCloseCommand implements OperationCommand{
         }
 
 
-        userAccountService.closeAccountById(accId);
+        accountService.closeAccountById(accId);
         System.out.println("Account with ID: " + accId + " has been closed");
     }
 

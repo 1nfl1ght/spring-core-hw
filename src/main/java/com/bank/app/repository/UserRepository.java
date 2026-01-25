@@ -4,6 +4,7 @@ import com.bank.app.config.AccountProperties;
 import com.bank.app.model.Account;
 import com.bank.app.model.User;
 import com.bank.app.service.AccountService;
+import com.bank.app.utils.TransactionHelper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -13,46 +14,47 @@ import java.util.Optional;
 @Repository
 public class UserRepository {
 
-    private final List<User> userList = new ArrayList<>();
-    private int idCounter = 0;
-    private final AccountService accountService;
+    private final TransactionHelper transactionHelper;
 
-    public UserRepository(AccountService accountService) {
-        this.accountService = accountService;
+    public UserRepository(TransactionHelper transactionHelper) {
+        this.transactionHelper = transactionHelper;
     }
 
-    public User createUser(String login) {
-        List<Account> accountList = new ArrayList<>();
-        idCounter++;
-        Account account = accountService.createAccount(idCounter);
-        accountList.add(account);
-        User user = new User(idCounter, login, accountList);
-        userList.add(user);
+    public void save(User user) {
+        transactionHelper.executeInTransaction(session -> {
+            session.persist(user);
+        });
+    }
 
-        return user;
+    public User findUserByLogin(String login) {
+        String sql = """
+                from User where login = :login
+                """;
+        return transactionHelper.executeInTransaction(session -> {
+            return session.createQuery(sql, User.class)
+                    .setParameter("login", login)
+                    .uniqueResult();
+        });
     }
 
     public User findUserById(int id) {
-        return userList.stream()
-                .filter(user -> user.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("User with id " + id + " not found"));
+        String sql = """
+                from User where id = :id
+                """;
+        return transactionHelper.executeInTransaction(session -> {
+            return session.createQuery(sql, User.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+        });
     }
 
     public List<User> findAll() {
-        return userList;
-    }
-
-    public void closeAccountBytId(int accountId, int userId) {
-        Optional<User> user = userList.stream()
-                .filter(usr -> usr.getId() == userId)
-                .findFirst();
-
-
-        user.ifPresent(
-                usr -> {
-                    usr.getAccountList().removeIf(acc -> acc.getId() == accountId);
-                }
-        );
+        String sql = """
+                from User
+                """;
+        return transactionHelper.executeInTransaction(session -> {
+            return session.createQuery(sql, User.class)
+                    .list();
+        });
     }
 }
