@@ -18,37 +18,43 @@ public class TransactionHelper {
     }
 
     public void executeInTransaction(Consumer<Session> action) {
-        Transaction transaction = null;
+        Session session = sessionFactory.getCurrentSession();
+        Transaction transaction = session.getTransaction();
+        boolean isNewTransaction = !transaction.isActive();
 
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.getTransaction();
+        if (isNewTransaction) {
             transaction.begin();
-
+        }
+        try {
             action.accept(session);
-
-            session.getTransaction().commit();
+            if (isNewTransaction && transaction.isActive()) {
+                transaction.commit();
+            }
         } catch (Exception e) {
-            if (transaction != null) {
+            if (isNewTransaction && transaction.isActive()) {
                 transaction.rollback();
             }
             throw e;
         }
     }
 
-    public<T> T executeInTransaction(Function<Session, T> action) {
-        Transaction transaction = null;
+    public <T> T executeInTransaction(Function<Session, T> action) {
+        Session session = sessionFactory.getCurrentSession();
+        Transaction transaction = session.getTransaction();
+        boolean isNewTransaction = !transaction.isActive();
 
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.getTransaction();
-            transaction.begin();
-
-            var result = action.apply(session);
-
-            session.getTransaction().commit();
-
+        try {
+            if (isNewTransaction) {
+                transaction.begin();
+            }
+            T result = action.apply(session);
+            if (isNewTransaction && transaction.isActive()) {
+                transaction.commit();
+            }
             return result;
+
         } catch (Exception e) {
-            if (transaction != null) {
+            if (isNewTransaction && transaction.isActive()) {
                 transaction.rollback();
             }
             throw e;

@@ -20,19 +20,23 @@ public class UserService {
         this.accountProperties = accountProperties;
     }
 
-    public void createUser(String login) {
+    public User createUser(String login) {
+
+        List<User> exist = userRepository.findUserByLogin(login);
+
+        if (!exist.isEmpty()) {
+            throw new IllegalArgumentException("User with login " + login + " already exists");
+        }
+
         User user = new User(login);
         Account account = new Account(accountProperties.getDefaultAmount(), user);
         user.getAccountList().add(account);
         userRepository.save(user);
+        return user;
     }
 
-    public User findUserById(int id) {
+    public User findUserById(Long id) {
         return userRepository.findUserById(id);
-    }
-
-    public User findUserById(String login) {
-        return userRepository.findUserByLogin(login);
     }
 
     public List<User> findAll() {

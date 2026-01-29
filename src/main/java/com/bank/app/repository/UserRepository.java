@@ -1,15 +1,10 @@
 package com.bank.app.repository;
 
-import com.bank.app.config.AccountProperties;
-import com.bank.app.model.Account;
 import com.bank.app.model.User;
-import com.bank.app.service.AccountService;
 import com.bank.app.utils.TransactionHelper;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -26,20 +21,18 @@ public class UserRepository {
         });
     }
 
-    public User findUserByLogin(String login) {
-        String sql = """
-                from User where login = :login
-                """;
+    public List<User> findUserByLogin(String login) {
+        String sql = "SELECT u FROM User u WHERE u.login = :login";
         return transactionHelper.executeInTransaction(session -> {
             return session.createQuery(sql, User.class)
                     .setParameter("login", login)
-                    .uniqueResult();
+                    .list();
         });
     }
 
-    public User findUserById(int id) {
+    public User findUserById(Long id) {
         String sql = """
-                from User where id = :id
+                SELECT u FROM User u where id = :id
                 """;
         return transactionHelper.executeInTransaction(session -> {
             return session.createQuery(sql, User.class)
@@ -50,7 +43,7 @@ public class UserRepository {
 
     public List<User> findAll() {
         String sql = """
-                from User
+                SELECT u FROM User u LEFT JOIN FETCH u.accountList
                 """;
         return transactionHelper.executeInTransaction(session -> {
             return session.createQuery(sql, User.class)

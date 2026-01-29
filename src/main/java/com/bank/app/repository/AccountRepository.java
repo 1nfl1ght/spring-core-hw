@@ -13,13 +13,10 @@ import java.util.Optional;
 @Repository
 public class AccountRepository {
 
-
     private final TransactionHelper transactionHelper;
-    private final AccountProperties accountProperties;
 
-    public AccountRepository(TransactionHelper transactionHelper, AccountProperties accountProperties) {
+    public AccountRepository(TransactionHelper transactionHelper) {
         this.transactionHelper = transactionHelper;
-        this.accountProperties = accountProperties;
     }
 
     public void save(Account account) {

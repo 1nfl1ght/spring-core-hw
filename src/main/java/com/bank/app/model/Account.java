@@ -15,6 +15,9 @@ public class Account {
     @Column(name = "money_amount")
     private int moneyAmount;
 
+    public Account() {
+    }
+
     public Account(int moneyAmount, User user) {
         this.moneyAmount = moneyAmount;
         this.user = user;
@@ -44,7 +47,7 @@ public class Account {
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", user=" + user +
+                ", userId=" + user.getId() +
                 ", moneyAmount=" + moneyAmount +
                 '}';
     }

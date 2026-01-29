@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 @Component
-public class AccountTransferCommand implements OperationCommand{
+public class AccountTransferCommand implements OperationCommand {
 
     private final AccountService accountService;
 
@@ -16,10 +16,9 @@ public class AccountTransferCommand implements OperationCommand{
     }
 
     @Override
-    public void execute() {
+    public void execute(Scanner scanner) {
         System.out.println("Enter source account ID:");
         System.out.print("> ");
-        Scanner scanner = new Scanner(System.in);
 
         int fromId;
         try {
@@ -62,7 +61,6 @@ public class AccountTransferCommand implements OperationCommand{
         }
 
         accountService.transfer(fromId, toId, amount);
-
         System.out.println("Amount " + amount + " transferred from account ID " + fromId + " to account ID " + toId + ".");
     }
 

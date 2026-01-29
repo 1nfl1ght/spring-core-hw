@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 @Component
-public class AccountCloseCommand implements OperationCommand{
+public class AccountCloseCommand implements OperationCommand {
 
     private final AccountService accountService;
 
@@ -16,11 +16,9 @@ public class AccountCloseCommand implements OperationCommand{
     }
 
     @Override
-    public void execute() {
+    public void execute(Scanner scanner) {
         System.out.println("Enter account ID to close:");
         System.out.print("> ");
-
-        Scanner scanner = new Scanner(System.in);
         int accId;
         try {
             accId = Integer.parseInt(scanner.nextLine());
@@ -30,7 +28,6 @@ public class AccountCloseCommand implements OperationCommand{
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid account ID format");
         }
-
 
         accountService.closeAccountById(accId);
         System.out.println("Account with ID: " + accId + " has been closed");

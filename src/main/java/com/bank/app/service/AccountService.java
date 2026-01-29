@@ -4,35 +4,33 @@ import com.bank.app.config.AccountProperties;
 import com.bank.app.model.Account;
 import com.bank.app.model.User;
 import com.bank.app.repository.AccountRepository;
-import com.bank.app.repository.UserRepository;
 import com.bank.app.utils.TransactionHelper;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final UserRepository userRepository;
     private final AccountProperties accountProperties;
     private final TransactionHelper transactionHelper;
 
-    public AccountService(AccountRepository accountRepository, UserRepository userRepository, AccountProperties accountProperties, TransactionHelper transactionHelper) {
+    public AccountService(AccountRepository accountRepository, AccountProperties accountProperties, TransactionHelper transactionHelper) {
         this.accountRepository = accountRepository;
-        this.userRepository = userRepository;
         this.accountProperties = accountProperties;
         this.transactionHelper = transactionHelper;
     }
 
-    public Account createAccount(int userId) {
-        User user = userRepository.findUserById(userId);
-        Account account = new Account(accountProperties.getDefaultAmount(), user);
-        user.getAccountList().add(account);
-        accountRepository.save(account);
-        return account;
+    public Account createAccount(Long userId) {
+        return transactionHelper.executeInTransaction(session -> {
+            User user = session.get(User.class, userId);
+            if (user == null) {
+                throw new IllegalArgumentException("User with id " + user + " not found");
+            }
+            Account account = new Account(accountProperties.getDefaultAmount(), user);
+            user.getAccountList().add(account);
+            session.persist(account);
+            return account;
+        });
     }
 
     public void accountDeposit(int accId, int amount) {
@@ -43,7 +41,7 @@ public class AccountService {
             if (account == null) {
                 throw new IllegalArgumentException("Account with id " + accId + " not found");
             }
-            account.setMoneyAmount(amount);
+            account.setMoneyAmount(account.getMoneyAmount() + amount);
         });
     }
 
@@ -61,7 +59,6 @@ public class AccountService {
             } else {
                 account.setMoneyAmount(account.getMoneyAmount() - amount);
             }
-            account.setMoneyAmount(amount);
         });
     }
 
@@ -93,6 +90,10 @@ public class AccountService {
     }
 
     public void closeAccountById(int id) {
+        Account account = accountRepository.findAccountById(id);
+        if (account == null) {
+            throw new IllegalArgumentException("Account with ID: " + id + " not found");
+        }
         accountRepository.delete(id);
     }
 }

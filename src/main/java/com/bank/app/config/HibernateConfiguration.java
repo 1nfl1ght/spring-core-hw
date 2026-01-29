@@ -14,7 +14,7 @@ public class HibernateConfiguration {
     private final String password;
     private final String dbUrl;
 
-    public HibernateConfiguration(@Value("${db.username}") String username, @Value("${db.password}") String password, @Value("${db.url}") String dbUrl) {
+    public HibernateConfiguration(@Value("${db.user}") String username, @Value("${db.password}") String password, @Value("${db.url}") String dbUrl) {
         this.username = username;
         this.password = password;
         this.dbUrl = dbUrl;
@@ -22,7 +22,6 @@ public class HibernateConfiguration {
 
     @Bean
     public SessionFactory sessionFactory() {
-
         org.hibernate.cfg.Configuration configuration = new org.hibernate.cfg.Configuration();
 
         configuration
@@ -34,7 +33,8 @@ public class HibernateConfiguration {
                 .setProperty("hibernate.connection.username", username)
                 .setProperty("hibernate.connection.password", password)
                 .setProperty("hibernate.show_sql", "true")
-                .setProperty("hibernate.hbm2ddl.auto", "update");
+                .setProperty("hibernate.hbm2ddl.auto", "update")
+                .setProperty("hibernate.current_session_context_class", "thread");
 
         return configuration.buildSessionFactory();
     }

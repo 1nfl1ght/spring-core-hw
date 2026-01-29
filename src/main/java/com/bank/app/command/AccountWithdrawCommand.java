@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 @Component
-public class AccountWithdrawCommand implements OperationCommand{
+public class AccountWithdrawCommand implements OperationCommand {
 
     private final AccountService accountService;
 
@@ -16,11 +16,10 @@ public class AccountWithdrawCommand implements OperationCommand{
     }
 
     @Override
-    public void execute() {
+    public void execute(Scanner scanner) {
 
         System.out.println("Enter account id:");
         System.out.print("> ");
-        Scanner scanner = new Scanner(System.in);
 
         int accId;
         try {
@@ -40,6 +39,10 @@ public class AccountWithdrawCommand implements OperationCommand{
             amount = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid amount format");
+        }
+
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount can not be less than 0");
         }
 
         accountService.accountWithdraw(accId, amount);

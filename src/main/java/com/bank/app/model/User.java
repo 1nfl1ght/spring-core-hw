@@ -3,6 +3,7 @@ package com.bank.app.model;
 import jakarta.persistence.*;
 
 import javax.print.attribute.standard.MediaSize;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,10 @@ public class User {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},  // Только безопасные операции
             orphanRemoval = true
     )
-    private List<Account> accountList;
+    private List<Account> accountList = new ArrayList<>();
+
+    public User() {
+    }
 
     public User(String login) {
         this.login = login;
