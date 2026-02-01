@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 @Component
-public class AccountDepositCommand implements OperationCommand{
+public class AccountDepositCommand implements OperationCommand {
 
     private final AccountService accountService;
 
@@ -16,10 +16,9 @@ public class AccountDepositCommand implements OperationCommand{
     }
 
     @Override
-    public void execute() {
+    public void execute(Scanner scanner) {
         System.out.println("Enter account id:");
         System.out.print("> ");
-        Scanner scanner = new Scanner(System.in);
 
         int accId;
         try {

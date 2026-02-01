@@ -3,10 +3,7 @@ package com.bank.app.console;
 import com.bank.app.command.OperationCommand;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 @Component
 public class OperationsConsoleListener {
@@ -19,17 +16,7 @@ public class OperationsConsoleListener {
     }
 
     public void listen() {
-        System.out.println("Please enter one operation type:");
-        System.out.println("""
-                -ACCOUNT_CREATE
-                -SHOW_ALL_USERS
-                -ACCOUNT_CLOSE
-                -ACCOUNT_WITHDRAW
-                -ACCOUNT_DEPOSIT
-                -ACCOUNT_TRANSFER
-                -USER_CREATE""");
-        System.out.print("> ");
-
+        printCommands();
 
         while (true) {
             Scanner scanner = new Scanner(System.in);
@@ -44,33 +31,31 @@ public class OperationsConsoleListener {
                 }
                 OperationCommand command = commandMap.get(operationType);
 
-                command.execute();
+                command.execute(scanner);
 
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
 
-            System.out.println("Please enter one operation type:");
-            System.out.println("""
-                -ACCOUNT_CREATE
-                -SHOW_ALL_USERS
-                -ACCOUNT_CLOSE
-                -ACCOUNT_WITHDRAW
-                -ACCOUNT_DEPOSIT
-                -ACCOUNT_TRANSFER
-                -USER_CREATE""");
-            System.out.print("> ");
+            printCommands();
         }
-
-
     }
 
-    public boolean isValidCommand(String command) {
+    private boolean isValidCommand(String command) {
         try {
             OperationType.valueOf(command);
             return true;
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private void printCommands() {
+        System.out.println("Please enter one operation type:");
+        Arrays.stream(OperationType.values())
+                .forEach(operation -> {
+                    System.out.println("- " + operation.name());
+                });
+        System.out.print("> ");
     }
 }

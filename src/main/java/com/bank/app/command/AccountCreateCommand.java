@@ -21,19 +21,20 @@ public class AccountCreateCommand implements OperationCommand{
     }
 
     @Override
-    public void execute() {
-        System.out.println("Enter the user id for which to create an account: ");
+    public void execute(Scanner scanner) {
+        System.out.println("Enter the user ID for which to create an account: ");
         System.out.print("> ");
-        Scanner scanner = new Scanner(System.in);
         String id = scanner.nextLine().trim();
 
         if (!id.isBlank()) {
-            User user = userService.findUserById(Integer.parseInt(id));
-            Account account = accountService.createAccount(Integer.parseInt(id));
-            user.getAccountList().add(account);
+            User user = userService.findUserById(Long.parseLong(id));
+            if (user == null) {
+                throw new IllegalArgumentException("User with ID: " + id + " not found");
+            }
+            Account account = accountService.createAccount(Long.parseLong(id));
             System.out.println("New account created with ID: " + account.getId() + " for user: " + user.getLogin());
         } else {
-            throw new IllegalArgumentException("User id can not be empty");
+            throw new IllegalArgumentException("User ID can not be empty");
         }
 
     }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Scanner;
 
 @Component
-public class CreateUserCommand implements OperationCommand{
+public class CreateUserCommand implements OperationCommand {
 
     private final UserService userService;
 
@@ -17,10 +17,9 @@ public class CreateUserCommand implements OperationCommand{
     }
 
     @Override
-    public void execute() {
+    public void execute(Scanner scanner) {
         System.out.println("Enter login for new user:");
         System.out.print("> ");
-        Scanner scanner = new Scanner(System.in);
         String login = scanner.nextLine().trim();
 
         if (!login.isBlank()) {

@@ -1,30 +1,24 @@
 package com.bank.app.command;
 
 import com.bank.app.console.OperationType;
-import com.bank.app.model.Account;
-import com.bank.app.model.User;
 import com.bank.app.service.AccountService;
-import com.bank.app.service.UserAccountService;
-import com.bank.app.service.UserService;
 import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 
 @Component
-public class AccountCloseCommand implements OperationCommand{
+public class AccountCloseCommand implements OperationCommand {
 
-    private final UserAccountService userAccountService;
+    private final AccountService accountService;
 
-    public AccountCloseCommand(UserAccountService userAccountService) {
-        this.userAccountService = userAccountService;
+    public AccountCloseCommand(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @Override
-    public void execute() {
+    public void execute(Scanner scanner) {
         System.out.println("Enter account ID to close:");
         System.out.print("> ");
-
-        Scanner scanner = new Scanner(System.in);
         int accId;
         try {
             accId = Integer.parseInt(scanner.nextLine());
@@ -35,8 +29,7 @@ public class AccountCloseCommand implements OperationCommand{
             throw new IllegalArgumentException("Invalid account ID format");
         }
 
-
-        userAccountService.closeAccountById(accId);
+        accountService.closeAccountById(accId);
         System.out.println("Account with ID: " + accId + " has been closed");
     }
 

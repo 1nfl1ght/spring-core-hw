@@ -1,25 +1,36 @@
 package com.bank.app.model;
 
+import jakarta.persistence.*;
+
+import javax.print.attribute.standard.MediaSize;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "users")
 public class User {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "login")
     private String login;
-    private List<Account> accountList;
+    @OneToMany(
+            mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},  // Только безопасные операции
+            orphanRemoval = true
+    )
+    private List<Account> accountList = new ArrayList<>();
 
-    public User(int id, String login, List<Account> accountList) {
-        this.id = id;
+    public User() {
+    }
+
+    public User(String login) {
         this.login = login;
-        this.accountList = accountList;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getLogin() {
